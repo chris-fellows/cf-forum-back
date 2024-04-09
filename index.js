@@ -1,8 +1,10 @@
 import express from "express"
 import mysql from "mysql"
+import routesAdverts from "./routes/adverts.js"
 import routesDebug from "./routes/debug.js"
 import routesGroups from "./routes/groups.js"
 import routesPosts from "./routes/posts.js"
+import routesRootPosts from "./routes/rootposts.js"
 import routesUsers from "./routes/users.js"
 //import pool  from "./database.js"
 import cors from "cors"
@@ -69,9 +71,11 @@ app.get("/", (req, res) => {
 })
 
 // Register routes
+app.use('/adverts', routesAdverts)
 app.use('/debug', routesDebug)
 app.use('/groups', routesGroups)
 app.use('/posts', routesPosts)
+app.use('/rootposts', routesRootPosts)
 app.use('/users', routesUsers)
 
 // Handle test request
@@ -107,32 +111,6 @@ app.use('/users', routesUsers)
 //        return res.json(data)
 //    })
 //})
-
-// Handle get group posts request
-app.get("/group/{id}/posts", (req, res) => {
-    const query = "SELECT * FROM cfforum.posts WHERE GroupId=? AND ..."   // TODO: Set this
-    console.log("Received get groups request")
-    //res.json("Response from group request")
-
-    db.query(query, (error, data) => {
-        if (error) console.log(error)    
-        if (error) return res.json(error)        
-        return res.json(data)
-    })
-})
-
-// Handle get random advert request
-app.get("/adverts/random", (req, res) => {
-    // TODO: Get random
-    const query = "SELECT * FROM cfforum.adverts"
-    console.log("Received get random advert request")
-
-    db.query(query, (error, data) => {
-        if (error) console.log(error)    
-        if (error) return res.json(error)
-        return res.json(data)
-    })
-})
 
 // Handle create group
 //app.post("/groups", (req, res) => {

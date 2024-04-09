@@ -2,17 +2,17 @@
 import express from "express"
 import connectionPool from "../database.js"
 
-const routesPosts = express.Router()
+const routesRootPosts = express.Router()
 
 // middleware that is specific to this router
 const timeLog = (req, res, next) => {
   console.log('Time: ', Date.now())
   next()
 }
-routesPosts.use(timeLog)  
+routesRootPosts.use(timeLog)  
 
 // Handle test request
-routesPosts.get("/test", (req, res) =>{    
+routesRootPosts.get("/test", (req, res) =>{    
     console.log("Received posts test")
 
     res.json("Response from posts test")
@@ -20,13 +20,13 @@ routesPosts.get("/test", (req, res) =>{
 
 // TODO: Remove this. Don't need to ever get all posts
 // Handle get posts request
-routesPosts.get("/", (req, res) => {
+routesRootPosts.get("/", (req, res) => {
     console.log("Received get posts request")
 
     connectionPool.getConnection((error, connection) => {            
-        console.log("Getting posts from DB")       
+        console.log("Getting root posts from DB")       
 
-        const query = "SELECT * FROM cfforum.posts"
+        const query = "SELECT * FROM cfforum.posts WHERE ID=RootPostID ORDER BY CreatedDateTime"
         connection.query(query, (error, data) => {
             console.log("Get posts query returned")
 
@@ -39,21 +39,15 @@ routesPosts.get("/", (req, res) => {
       })
 })
 
-// Handle get post by id request
-routesPosts.get("/byroot/:postid", (req, res) => {
-    console.log("Received get posts by root post id request")
+// Handle get root post by group id request
+routesRootPosts.get("/bygroup/:id", (req, res) => {
+    console.log("Received get root posts by group id request")
 
     connectionPool.getConnection((error, connection) => {            
-        console.log("Getting posts by group id from DB")       
+        console.log("Getting root posts by group id from DB")       
+        const values = [req.params.id]
 
-        // Calculate offset
-        const offset = (req.query.pageNumber - 1) * req.query.pageSize;
-
-        const values = [req.params.postid,
-                        req.query.pageSize,
-                        offset]
-
-        const query = "SELECT * FROM cfforum.posts WHERE RootPostID=? ORDER BY CreatedDateTime LIMIT ? OFFSET ?"
+        const query = "SELECT * FROM cfforum.posts WHERE ID=? AND ID=RootPostID ORDER BY CreatedDateTime"
         connection.query(query, values, (error, data) => {
             console.log("Get posts query returned")
 
@@ -67,4 +61,4 @@ routesPosts.get("/byroot/:postid", (req, res) => {
 })
 
 //module.exports = router
-export default routesPosts
+export default routesRootPosts

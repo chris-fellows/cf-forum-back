@@ -1,5 +1,7 @@
 //const express = require('express')
 import express from "express"
+import connectionPool from "../database.js"
+
 const routesUsers = express.Router()
 
 // middleware that is specific to this router

@@ -1,5 +1,6 @@
 import mysql from "mysql"
 
+// TODO: Move to config
 console.log("Creating database pool")
 const connectionPool  = mysql.createPool({
     connectionLimit : 5,

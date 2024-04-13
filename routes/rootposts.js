@@ -47,7 +47,11 @@ routesRootPosts.get("/bygroup/:id", (req, res) => {
         console.log("Getting root posts by group id from DB")       
         const values = [req.params.id]
 
-        const query = "SELECT * FROM cfforum.posts WHERE ID=? AND ID=RootPostID ORDER BY CreatedDateTime"
+        //const query = "SELECT * FROM cfforum.posts WHERE GroupID=? AND ID=RootPostID ORDER BY CreatedDateTime"
+        const query = "SELECT p.*, u.Name AS UserName, u.Logo AS UserLogo " +
+            "FROM cfforum.posts p " +
+            "INNER JOIN cfforum.users u on u.ID = p.UserID " +
+            "WHERE p.ID=p.RootPostID ORDER BY p.CreatedDateTime"
         connection.query(query, values, (error, data) => {
             console.log("Get posts query returned")
 

@@ -9,7 +9,7 @@ VALUES
 'Chris Fellows',
 'chrismfellows@hotmail.co.uk',
 1,
-null);
+'https://picsum.photos/50');
 
 /*
 DELETE FROM `cfforum`.`user_roles` 
@@ -37,7 +37,7 @@ VALUES
 'Chris Fellows 2',
 'chrisfellows90{@gmail.com',
 1,
-null);
+'https://picsum.photos/50');
 
 /*
 DELETE FROM `cfforum`.`user_roles` 

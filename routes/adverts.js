@@ -18,16 +18,18 @@ routesAdverts.get("/test", (req, res) =>{
     res.json("Response from adverts test")
 })
 
-// Handle get random advert request
-routesAdverts.get("/random", (req, res) => {
-    console.log("Received get random advert request")
+// Handle get random adverts request
+routesAdverts.get("/random/:number", (req, res) => {
+    console.log("Received get random adverts request")
 
     connectionPool.getConnection((error, connection) => {            
-        console.log("Getting random advert from DB")       
+        console.log("Getting random adverts from DB")       
+
+        const values = [Number(req.params.number)]
         
-        const query = "SELECT * FROM cfforum.adverts WHERE NOW() >= FromDateTime AND NOW() < EndDateTime ORDER BY RAND() LIMIT 1"
-        connection.query(query, (error, data) => {
-            console.log("Get random adver query returned")
+        const query = "SELECT * FROM cfforum.adverts WHERE NOW() >= FromDateTime AND NOW() < ToDateTime ORDER BY RAND() LIMIT ?"
+        connection.query(query, values, (error, data) => {
+            console.log("Get random adverts query returned")
 
             if (error) console.log(error)    
             if (error) return res.json(error)

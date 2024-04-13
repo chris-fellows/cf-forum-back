@@ -25,10 +25,37 @@ routesPosts.get("/", (req, res) => {
 
     connectionPool.getConnection((error, connection) => {            
         console.log("Getting posts from DB")       
+        
+        const query = "SELECT p.*, u.Name AS UserName, u.Logo AS UserLogo " +
+            "FROM cfforum.posts p " +
+            "INNER JOIN cfforum.users u on u.ID = p.UserID " +        
+            "ORDER BY p.CreatedDateTime"
 
-        const query = "SELECT * FROM cfforum.posts"
         connection.query(query, (error, data) => {
             console.log("Get posts query returned")
+
+            if (error) console.log(error)    
+            if (error) return res.json(error)
+            return res.json(data)
+        })
+
+        connection.release()        
+      })
+})
+
+// Handle delete posyt by id request
+// TODO: Change to just hide post
+routesPosts.delete("/:postid", (req, res) => {
+    console.log("Received delete post by id request")
+
+    connectionPool.getConnection((error, connection) => {            
+        console.log("Getting posts by group id from DB")       
+
+        const values = [req.params.postid]
+
+        const query = "DELETE * FROM cfforum.posts WHERE PostID=?"
+        connection.query(query, values, (error, data) => {
+            console.log("Delete posts query returned")
 
             if (error) console.log(error)    
             if (error) return res.json(error)
@@ -47,13 +74,20 @@ routesPosts.get("/byroot/:postid", (req, res) => {
         console.log("Getting posts by group id from DB")       
 
         // Calculate offset
-        const offset = (req.query.pageNumber - 1) * req.query.pageSize;
+        const offset = (Number(req.query.pageNumber) - 1) * Number(req.query.pageSize);
 
         const values = [req.params.postid,
-                        req.query.pageSize,
+                        Number(req.query.pageSize),
                         offset]
 
-        const query = "SELECT * FROM cfforum.posts WHERE RootPostID=? ORDER BY CreatedDateTime LIMIT ? OFFSET ?"
+        //const query = "SELECT * FROM cfforum.posts WHERE RootPostID=? ORDER BY CreatedDateTime LIMIT ? OFFSET ?"
+
+        const query = "SELECT p.*, u.Name AS UserName, u.Logo AS UserLogo " +
+            "FROM cfforum.posts p " +
+            "INNER JOIN cfforum.users u on u.ID = p.UserID " +
+            "WHERE RootPostID=? " +
+            "ORDER BY p.CreatedDateTime LIMIT ? OFFSET ?"
+
         connection.query(query, values, (error, data) => {
             console.log("Get posts query returned")
 

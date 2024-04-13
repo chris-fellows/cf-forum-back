@@ -2,6 +2,8 @@
 Creates example forum posts
 */
 
+/* TABLE cfforum.posts */
+
 SET @GroupID = (SELECT ID FROM cfforum.groups WHERE Name='Product 1 discussions');
 SET @UserID = (SELECT ID FROM cfforum.users WHERE Email='chrismfellows@hotmail.co.uk');
 
@@ -19,7 +21,7 @@ INSERT INTO cfforum.posts
 VALUES
 (
 	@GroupID,
-    'First post for topic',
+    'Post 1 for topic',
     @UserID,
     NOW(),
     1,
@@ -33,10 +35,9 @@ UPDATE cfforum.posts
 SET RootPostID = ID	
 WHERE ID = @RootPostID;
 
-SELECT SLEEP(2);
+SELECT SLEEP(1);
 
-/* Add posts */
-INSERT INTO cfforum.posts
+  INSERT INTO cfforum.posts
 		(
 			GroupID,
 			Text,
@@ -45,96 +46,30 @@ INSERT INTO cfforum.posts
 			Sequence,
             RootPostID,
             ParentPostID
-		)
-		VALUES
-		(
-			@GroupID,
-			'Message 2',
-			@UserID,
-			NOW(),
-			2,
+		)        
+        WITH RECURSIVE
+		cte AS ( SELECT 1 num 
+         UNION ALL 
+         SELECT num+1 FROM cte WHERE num < 50 )
+		SELECT @GroupID,
+			'Post XXX',
+            @UserID,
+            NOW(),
+            CONVERT(cte.num + 1, SIGNED),
             @RootPostID,
-            @RootPostID
-		);
-        
-SELECT SLEEP(2);
-        
-INSERT INTO cfforum.posts
-		(
-			GroupID,
-			Text,
-			UserID,
-			CreatedDateTime,
-			Sequence,
-            RootPostID,
-            ParentPostID
-		)
-		VALUES
-		(
-			@GroupID,
-			'Message 3',
-			@UserID,
-			NOW(),
-			3,
-            @RootPostID,
-            @RootPostID
-		);
-        
-SELECT SLEEP(2);
-        
-INSERT INTO cfforum.posts
-		(
-			GroupID,
-			Text,
-			UserID,
-			CreatedDateTime,
-			Sequence,
-            RootPostID,
-            ParentPostID
-		)
-		VALUES
-		(
-			@GroupID,
-			'Message 4',
-			@UserID,
-			NOW(),
-			4,
-            @RootPostID,
-            @RootPostID
-		);
-        
-SELECT SLEEP(2);
+            @RootPostID            
+		FROM cte;
 
-INSERT INTO cfforum.posts
-		(
-			GroupID,
-			Text,
-			UserID,
-			CreatedDateTime,
-			Sequence,
-            RootPostID,
-            ParentPostID
-		)
-		VALUES
-		(
-			@GroupID,
-			'Message 5',
-			@UserID,
-			NOW(),
-			5,
-            @RootPostID,
-            @RootPostID
-		);
-
+			/* ('Post ' + CONVERT((cte.num + 1), NCHAR) + ' for topic'),    */
 /*
-SET @sequence = 1;
-WHILE @sequence < 10 DO
-END WHILE;
-WHILE @PostSequence < 10 DO
-	SET @PostSequence = @PostSequence + 1;
-END;
+ADD_POSTS_LOOP: LOOP
+
+	IF @sequence > 10 THEN
+		LEAVE ADD_POSTS_LOOP;
+	END IF;
+END LOOP ADD_POSTS_LOOP;
 */
-   
+
    /*
     INSERT INTO cfforum.posts
 		(

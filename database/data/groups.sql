@@ -9,7 +9,7 @@ VALUES
 'Product 1 discussions',
 'Discussions of product 1',
 1,
-null);
+'https://picsum.photos/50');
 
 INSERT INTO `cfforum`.`groups`
 (`ID`,
@@ -22,7 +22,7 @@ VALUES
 'Product 2 discussions',
 'Discussions of product 2',
 1,
-null);
+'https://picsum.photos/50');
 
 INSERT INTO `cfforum`.`groups`
 (`ID`,
@@ -35,4 +35,4 @@ VALUES
 'Product 3 discussions',
 'Discussions of product 3',
 1,
-null);
+'https://picsum.photos/50');

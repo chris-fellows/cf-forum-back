@@ -66,7 +66,7 @@ routesPosts.delete("/:postid", (req, res) => {
       })
 })
 
-// Handle get post by id request
+// Handle get posts by id request
 routesPosts.get("/byroot/:postid", (req, res) => {
     console.log("Received get posts by root post id request")
 
@@ -79,8 +79,6 @@ routesPosts.get("/byroot/:postid", (req, res) => {
         const values = [req.params.postid,
                         Number(req.query.pageSize),
                         offset]
-
-        //const query = "SELECT * FROM cfforum.posts WHERE RootPostID=? ORDER BY CreatedDateTime LIMIT ? OFFSET ?"
 
         const query = "SELECT p.*, u.Name AS UserName, u.Logo AS UserLogo " +
             "FROM cfforum.posts p " +
@@ -99,6 +97,40 @@ routesPosts.get("/byroot/:postid", (req, res) => {
         connection.release()        
       })
 })
+
+// Handle get posts by user id request
+routesPosts.get("/byuser/:userid", (req, res) => {
+    console.log("Received get posts by root post id request")
+
+    connectionPool.getConnection((error, connection) => {            
+        console.log("Getting posts by group id from DB")       
+
+        // Calculate offset
+        const offset = (Number(req.query.pageNumber) - 1) * Number(req.query.pageSize);
+
+        const values = [req.params.userid,
+                        Number(req.query.pageSize),
+                        offset]
+        
+        const query = "SELECT p.*, u.Name AS UserName, u.Logo AS UserLogo " +
+            "FROM cfforum.posts p " +
+            "INNER JOIN cfforum.users u on u.ID = p.UserID " +
+            "WHERE p.UserID=? " +
+            "ORDER BY p.CreatedDateTime LIMIT ? OFFSET ?"
+
+        connection.query(query, values, (error, data) => {
+            console.log("Get posts query returned")
+
+            if (error) console.log(error)    
+            if (error) return res.json(error)
+            return res.json(data)
+        })
+
+        connection.release()        
+      })
+})
+
+
 
 //module.exports = router
 export default routesPosts

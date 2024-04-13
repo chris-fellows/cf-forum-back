@@ -25,7 +25,7 @@ routesGroups.get("/", (req, res) => {
     connectionPool.getConnection((error, connection) => {            
         console.log("Getting groups from DB")       
 
-        const query = "SELECT * FROM cfforum.groups"
+        const query = "SELECT * FROM cfforum.groups ORDER BY Name"
         connection.query(query, (error, data) => {
             console.log("Get groups query returned")
 

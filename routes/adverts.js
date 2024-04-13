@@ -27,7 +27,9 @@ routesAdverts.get("/random/:number", (req, res) => {
 
         const values = [Number(req.params.number)]
         
-        const query = "SELECT * FROM cfforum.adverts WHERE NOW() >= FromDateTime AND NOW() < ToDateTime ORDER BY RAND() LIMIT ?"
+        const query = "SELECT * FROM cfforum.adverts " +
+          "WHERE NOW() >= FromDateTime AND NOW() < ToDateTime " +
+          "ORDER BY RAND() LIMIT ?"
         connection.query(query, values, (error, data) => {
             console.log("Get random adverts query returned")
 

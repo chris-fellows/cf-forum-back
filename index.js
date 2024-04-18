@@ -13,6 +13,9 @@ const app = express()
 // Enable cors
 app.use(cors())
 
+// Handle body
+app.use(express.json())   
+
 // Register routes
 app.use('/adverts', routesAdverts)
 app.use('/debug', routesDebug)

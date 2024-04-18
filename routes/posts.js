@@ -130,6 +130,76 @@ routesPosts.get("/byuser/:userid", (req, res) => {
       })
 })
 
+// Handle update post by id request
+routesPosts.put("/:postid", (req, res) => {
+    console.log("Received update post by id request")
+
+    connectionPool.getConnection((error, connection) => {            
+        console.log("Updating post by id")       
+
+        const values = [req.body.text,
+                        req.params.postid]
+
+        const query = "UPDATE cfforum.posts SET Text=? WHERE ID=?"
+        connection.query(query, values, (error, data) => {
+            console.log("Updated post")
+
+            if (error) console.log(error)    
+            if (error) return res.json(error)
+            return res.json(data)
+        })
+
+        connection.release()        
+      })
+})
+
+// TODO: Fix this
+// Handle upvote post by id request
+routesPosts.put("/:postid/upvote", (req, res) => {
+    console.log("Received upvote post by id request")
+
+    connectionPool.getConnection((error, connection) => {            
+        console.log("Updating post by id")       
+
+        const values = [req.body.text,
+                        req.params.postid]
+
+        const query = "UPDATE cfforum.posts SET Text=? WHERE ID=?"
+        connection.query(query, values, (error, data) => {
+            console.log("Updated post")
+
+            if (error) console.log(error)    
+            if (error) return res.json(error)
+            return res.json(data)
+        })
+
+        connection.release()        
+      })
+})
+
+// TODO: Fix this
+// Handle downvote post by id request
+routesPosts.put("/:postid/downvote", (req, res) => {
+    console.log("Received downvote post by id request")
+
+    connectionPool.getConnection((error, connection) => {            
+        console.log("Updating post by id")       
+
+        const values = [req.body.text,
+                        req.params.postid]
+
+        const query = "UPDATE cfforum.posts SET Text=? WHERE ID=?"
+        connection.query(query, values, (error, data) => {
+            console.log("Updated post")
+
+            if (error) console.log(error)    
+            if (error) return res.json(error)
+            return res.json(data)
+        })
+
+        connection.release()        
+      })
+})
 
 
 //module.exports = router

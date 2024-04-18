@@ -16,71 +16,90 @@ routesSecurity.get("/test", (req, res) =>{
     res.json("Response from debug test")
 })
 
-// Handle authenticate request
-// TODO: Validate credentials
+// Handle login request
 routesSecurity.post("/login", (req, res) =>{    
     console.log("Received login request")
 
-    const newToken = "1234567";
-    const newUserId = 1;
-    const newUserName = "Chris Fellows";
-    const newEmail = "chrismfellows@hotmail.co.uk";
-
-    connectionPool.getConnection((error, connection) => {            
-      console.log("Getting user details");
-      console.log(req.body) ;
-      console.log("username=" + req.body.username);
-
+    // User session details
+    let newToken = "1234567"; // TODO: Set this properly
+    
+    connectionPool.getConnection((error, connection) => {                
       const values2 = [req.body.username, req.body.password]
       const query2 = "SELECT * FROM cfforum.users WHERE Email=? AND Password=?"
-      connection.query(query, values2, (error, data) => {          
+      connection.query(query2, values2, (error, data) => {                    
           if (error) console.log(error)    
           if (error) return res.json(error) 
+          
+          if (data.length > 0) {      // Valid credentials             
+            const newUserId = Number(data[0].ID);
+            const newUserName = data[0].Name;
+            const newEmail = data[0].Email;
 
-          console.log(data);        
-          const values = [newUserId, newToken];
+            const values = [newUserId, newToken];            
+            const query = "INSERT INTO cfforum.user_sessions(CreatedDateTime, UserID, Token) VALUES (NOW(), ?, ?)"
+            connection.query(query, values, (error, data) => {
+                //console.log("Added user session returned");                  
+                if (error) console.log(error)    
+                if (error) return res.json(error)
 
-          const query = "INSERT INTO cfforum.login_sessions(CreatedDateTime, UserID, Token) VALUES (NOW(), ?)"
-          connection.query(query, values, (error, data) => {
-              console.log("Delete posts query returned")
-    
-              if (error) console.log(error)    
-              if (error) return res.json(error)
-              //return res.json(data)
-          })
+                console.log("Sending response (Success)");
+                res.send({
+                    email: newEmail,
+                    userName: newUserName,
+                    userId: newUserId,
+                    token: newToken
+                  });
+            })
+          }
+          else {    // Invalid credentials
+            console.log("Sending response (Failed)");
+            res.send({
+                email: "",
+                userName: "",
+                userId: 0,
+                token: ""
+              });
+          }                     
       })
 
+      console.log("Releasing pool connection");
       connection.release()        
-    })
-
-    res.send({
-        email: newEmail,
-        userName: newUserName,
-        userId: newUserId,
-        token: newToken
-      });
+    })  
 })
 
-/*
-routesSecurity.get("/logout", (req, res) =>{    
-  console.log("Received logout request")
-
-  connectionPool.getConnection((error, connection) => {            
-    console.log("Getting posts by group id from DB")     
-
+// Handle logout request
+routesSecurity.post("/logout", (req, res) =>{        
+  connectionPool.getConnection((error, connection) => {                
     const values2 = [req.body.token]
-    const query2 = "DELETE FROM cfforum.login_sessions WHERE Token=?"
-    connection.query(query, values2, (error, data) => {          
+    const query2 = "SELECT ID FROM cfforum.user_sessions WHERE Token=?"
+    connection.query(query2, values2, (error, data) => {                    
         if (error) console.log(error)    
         if (error) return res.json(error) 
+        
+        if (data.length > 0) {      // Valid token                       
+          const query = "DELETE FROM cfforum.user_sessions WHERE Token=?"
+          connection.query(query, values2, (error, data) => {              
+              if (error) console.log(error)    
+              if (error) return res.json(error)
 
-        console.log(data);
-        return 
+              console.log("Sending response (Success)");
+              res.send({
+                  loggedOut: true                  
+                });
+          })
+        }
+        else {    // Invalid token
+          console.log("Sending response (Failed)");
+          res.send({
+              loggedOut: false         
+            });
+        }                     
     })
 
-    res.json("Logged out");
+    console.log("Releasing pool connection");
+    connection.release()        
+  })  
 })
-*/
 
 //module.exports = router
 export default routesSecurity

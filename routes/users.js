@@ -23,15 +23,22 @@ routesUsers.get("/", (req, res) => {
   console.log("Received get users request")
 
   connectionPool.getConnection((error, connection) => {            
-      console.log("Getting users from DB")       
+      console.log("Getting users from DB")      
+      
+      const values = [10000000, // pageSize
+                      1] // pageNumber
 
-      const query = "SELECT * FROM cfforum.users"
-      connection.query(query, (error, data) => {
+      const query = "CALL cfforum.sp_Get_Users(?, ?)"
+      connection.query(query, values, (error, data) => {
           console.log("Get users query returned")
 
           if (error) console.log(error)    
           if (error) return res.json(error)
-          return res.json(data)
+
+          // Strip RawDataPacket
+          const result = JSON.parse(JSON.stringify(data[0]));
+          console.log(result);                  
+          return res.json(result);
       })
 
       connection.release()        
@@ -46,13 +53,17 @@ routesUsers.get("/:id", (req, res) => {
       console.log("Getting user by id from DB")       
       const values = [req.params.id]
 
-      const query = "SELECT * FROM cfforum.users WHERE ID=?"
+      const query = "CALL cfforum.sp_Get_User(?)"
       connection.query(query, values, (error, data) => {
           console.log("Get user query returned")
 
           if (error) console.log(error)    
           if (error) return res.json(error)
-          return res.json(data)
+
+          // Strip RawDataPacket
+          const result = JSON.parse(JSON.stringify(data[0]));
+          console.log(result);                  
+          return res.json(result);          
       })
 
       connection.release()        

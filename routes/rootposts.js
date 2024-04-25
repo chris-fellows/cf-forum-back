@@ -45,19 +45,21 @@ routesRootPosts.get("/bygroup/:id", (req, res) => {
 
     connectionPool.getConnection((error, connection) => {            
         console.log("Getting root posts by group id from DB")       
-        const values = [req.params.id]
-
-        //const query = "SELECT * FROM cfforum.posts WHERE GroupID=? AND ID=RootPostID ORDER BY CreatedDateTime"
-        const query = "SELECT p.*, u.Name AS UserName, u.Logo AS UserLogo " +
-            "FROM cfforum.posts p " +
-            "INNER JOIN cfforum.users u on u.ID = p.UserID " +
-            "WHERE p.ID=p.RootPostID ORDER BY p.CreatedDateTime"
+        const values = [req.params.id,
+                        10000000,   // pageSize
+                        1]          // pageNumber
+        
+        const query = "CALL cfforum.sp_Get_Root_Posts_By_Group(?, ?, ?)"
         connection.query(query, values, (error, data) => {
             console.log("Get posts query returned")
 
             if (error) console.log(error)    
             if (error) return res.json(error)
-            return res.json(data)
+            
+            // Strip RawDataPacket
+            const result = JSON.parse(JSON.stringify(data[0]));
+            console.log(result);        
+            return res.json(result)   
         })
 
         connection.release()        

@@ -22,20 +22,24 @@ routesAdverts.get("/test", (req, res) =>{
 routesAdverts.get("/random/:number", (req, res) => {
     console.log("Received get random adverts request")
 
+    const authorization = req.header('authorization');
+
     connectionPool.getConnection((error, connection) => {            
         console.log("Getting random adverts from DB")       
 
         const values = [Number(req.params.number)]
         
-        const query = "SELECT * FROM cfforum.adverts " +
-          "WHERE NOW() >= FromDateTime AND NOW() < ToDateTime " +
-          "ORDER BY RAND() LIMIT ?"
+        const query = "CALL cfforum.sp_Get_Random_Adverts(?)"          
         connection.query(query, values, (error, data) => {
             console.log("Get random adverts query returned")
 
             if (error) console.log(error)    
             if (error) return res.json(error)
-            return res.json(data)
+
+            // Strip RawDataPacket
+          const result = JSON.parse(JSON.stringify(data[0]));
+          console.log(result);        
+          return res.json(result)            
         })
 
         connection.release()        

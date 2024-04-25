@@ -25,13 +25,17 @@ routesGroups.get("/", (req, res) => {
     connectionPool.getConnection((error, connection) => {            
         console.log("Getting groups from DB")       
 
-        const query = "SELECT * FROM cfforum.groups ORDER BY Name"
+        const query = "CALL cfforum.sp_Get_Groups()"
         connection.query(query, (error, data) => {
             console.log("Get groups query returned")
 
             if (error) console.log(error)    
             if (error) return res.json(error)
-            return res.json(data)
+            
+            // Strip RawDataPacket
+            const result = JSON.parse(JSON.stringify(data[0]));
+            console.log(result);        
+            return res.json(result)   
         })
 
         connection.release()        
@@ -46,13 +50,17 @@ routesGroups.get("/:id", (req, res) => {
         console.log("Getting group by id from DB")       
         const values = [req.params.id]
 
-        const query = "SELECT * FROM cfforum.groups WHERE ID=?"
+        const query = "CALL cfforum.sp_Get_Group(?)"
         connection.query(query, values, (error, data) => {
             console.log("Get groups query returned")
 
             if (error) console.log(error)    
             if (error) return res.json(error)
-            return res.json(data)
+            
+             // Strip RawDataPacket
+             const result = JSON.parse(JSON.stringify(data[0]));
+             console.log(result);        
+             return res.json(result)   
         })
 
         connection.release()        

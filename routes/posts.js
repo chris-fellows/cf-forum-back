@@ -221,5 +221,38 @@ routesPosts.put("/:postid/track", (req, res) => {
       })
 })
 
+
+// Handle add post request
+routesPosts.post("/", (req, res) => {
+    console.log("Received add post request")
+
+    connectionPool.getConnection((error, connection) => {            
+        console.log("Add post")       
+
+        // GroupID, Text, UserID, RootPostID, ParentPostID
+        const values = [req.body.groupId,                        
+                        req.body.text,
+                        req.body.userId,
+                        req.body.rootPostId,
+                        req.body.parentPostId]
+        
+        const query = "CALL cfforum.sp_Add_Post(?, ?, ?, ?, ?)"
+        connection.query(query, values, (error, data) => {
+            console.log("Added post")
+
+            if (error) console.log(error)    
+            if (error) return res.json(error)
+            
+            // Strip RawDataPacket
+            const result = JSON.parse(JSON.stringify(data[0]));
+            console.log(result);        
+            return res.json(result)      
+        })
+
+        connection.release()        
+      })
+})
+
+
 //module.exports = router
 export default routesPosts

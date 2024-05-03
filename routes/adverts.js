@@ -38,7 +38,7 @@ routesAdverts.get("/random/:number", (req, res) => {
 
             // Strip RawDataPacket
           const result = JSON.parse(JSON.stringify(data[0]));
-          console.log(result);        
+          //console.log(result);        
           return res.json(result)            
         })
 

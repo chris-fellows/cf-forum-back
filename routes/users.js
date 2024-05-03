@@ -1,6 +1,7 @@
 //const express = require('express')
 import express from "express"
 import connectionPool from "../database.js"
+import { getUserId } from "../getUser.js"
 
 const routesUsers = express.Router()
 
@@ -24,6 +25,9 @@ routesUsers.get("/", (req, res) => {
 
   connectionPool.getConnection((error, connection) => {            
       console.log("Getting users from DB")      
+
+      //const currentUserId = getUserId(req.header('authorization'));        
+      //console.log("User=" + currentUserId);
       
       const values = [10000000, // pageSize
                       1] // pageNumber
@@ -37,7 +41,7 @@ routesUsers.get("/", (req, res) => {
 
           // Strip RawDataPacket
           const result = JSON.parse(JSON.stringify(data[0]));
-          console.log(result);                  
+          //console.log(result);                  
           return res.json(result);
       })
 

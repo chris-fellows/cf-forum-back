@@ -1,6 +1,7 @@
 //const express = require('express')
 import express from "express"
 import connectionPool from "../database.js"
+import { getUserId } from "../getUser.js"
 
 const routesPosts = express.Router()
 
@@ -76,18 +77,16 @@ routesPosts.get("/byroot/:postid", (req, res) => {
         // Calculate offset
         //const offset = (Number(req.query.pageNumber) - 1) * Number(req.query.pageSize);
 
+        // Get current user
+        const currentUserId = getUserId(req.header('authorization'));        
+        //console.log("User=" + currentUserId);
+
         const values = [req.params.postid,
                         Number(req.query.pageSize),
-                        Number(req.query.pageNumber)]
-
-        /*                        
-        const query = "SELECT p.*, u.Name AS UserName, u.Logo AS UserLogo " +
-            "FROM cfforum.posts p " +
-            "INNER JOIN cfforum.users u on u.ID = p.UserID " +
-            "WHERE RootPostID=? " +
-            "ORDER BY p.CreatedDateTime LIMIT ? OFFSET ?"
-        */
-        const query = "CALL cfforum.sp_Get_Posts_By_Root_Post(?, ?, ?)"
+                        Number(req.query.pageNumber),
+                        Number(currentUserId)]
+       
+        const query = "CALL cfforum.sp_Get_Posts_By_Root_Post(?, ?, ?, ?)"
         connection.query(query, values, (error, data) => {
             console.log("Get posts query returned")
 
@@ -114,19 +113,15 @@ routesPosts.get("/byuser/:userid", (req, res) => {
         // Calculate offset
         //const offset = (Number(req.query.pageNumber) - 1) * Number(req.query.pageSize);
 
+        const currentUserId = getUserId(req.header('authorization'));        
+        console.log("User=" + currentUserId);
+
         const values = [req.params.userid,
                         Number(req.query.pageSize),
-                        Number(req.query.pageNumber)]
-        
-        /*                                
-        const query = "SELECT p.*, u.Name AS UserName, u.Logo AS UserLogo " +
-            "FROM cfforum.posts p " +
-            "INNER JOIN cfforum.users u on u.ID = p.UserID " +
-            "WHERE p.UserID=? " +
-            "ORDER BY p.CreatedDateTime LIMIT ? OFFSET ?"
-        */
-        const query = "CALL cfforum.sp_Get_Posts_By_User(?, ?, ?)"
-
+                        Number(req.query.pageNumber),
+                        Number(currentUserId)]
+               
+        const query = "CALL cfforum.sp_Get_Posts_By_User(?, ?, ?, ?)"
         connection.query(query, values, (error, data) => {
             console.log("Get posts query returned")
 
@@ -135,7 +130,7 @@ routesPosts.get("/byuser/:userid", (req, res) => {
             
              // Strip RawDataPacket
             const result = JSON.parse(JSON.stringify(data[0]));
-            console.log(result);        
+            //console.log(result);        
             return res.json(result)      
         })
 
@@ -163,7 +158,7 @@ routesPosts.put("/:postid", (req, res) => {
             
             // Strip RawDataPacket
             const result = JSON.parse(JSON.stringify(data[0]));
-            console.log(result);        
+            //console.log(result);        
             return res.json(result)      
         })
 
@@ -177,15 +172,15 @@ routesPosts.put("/:postid/vote", (req, res) => {
     console.log("Received unvote post by id request")
 
     connectionPool.getConnection((error, connection) => {            
-        console.log("Updating post by id")       
+        console.log("Updating user post info by id")       
 
-        const values = [req.body.vote,
+        const values = [req.body.userid,                        
                         req.params.postid,
-                        req.body.userid]
+                        req.body.vote]                        
 
-        const query = "UPDATE cfforum.user_post_info SET Vote=? PostID=? AND UserID=?"
+        const query = "CALL cfforum.sp_Update_User_Post_Info(?, ?, ?, null)"
         connection.query(query, values, (error, data) => {
-            console.log("Updated post")
+            console.log("Updated user post info")
 
             if (error) console.log(error)    
             if (error) return res.json(error)
@@ -204,11 +199,11 @@ routesPosts.put("/:postid/track", (req, res) => {
     connectionPool.getConnection((error, connection) => {            
         console.log("Updating post by id")       
 
-        const values = [req.body.track,
+        const values = [req.body.userid,
                         req.params.postid,
-                        req.body.userid]
+                        req.body.track]                        
 
-        const query = "UPDATE cfforum.user_post_info SET Track=? WHERE PostID=? AND UserID=?"
+        const query = "CALL cfforum.sp_Update_User_Post_Info(?, ?, null, ?)"
         connection.query(query, values, (error, data) => {
             console.log("Updated post")
 
@@ -245,7 +240,7 @@ routesPosts.post("/", (req, res) => {
             
             // Strip RawDataPacket
             const result = JSON.parse(JSON.stringify(data[0]));
-            console.log(result);        
+            //console.log(result);        
             return res.json(result)      
         })
 

@@ -51,5 +51,38 @@ routesAudit.get("/byhours/:hours", (req, res) => {
       })
 })
 
+// Handle get audit by user request
+routesAudit.get("/byuser/:userid", (req, res) => {
+  console.log("Received get audit by user request")
+
+  connectionPool.getConnection((error, connection) => {            
+      console.log("Getting audit by user from DB")       
+      
+      const currentUserId = getUserId(req.header('authorization'));                
+      //console.log("User=" + currentUserId);
+
+      const values = [req.params.userid,
+                      Number(req.query.pageSize),
+                      Number(req.query.pageNumber),
+                      Number(currentUserId)]
+
+      const query = "CALL cfforum.sp_Get_Audit_By_User(?, ?, ?, ?)"
+      connection.query(query, values, (error, data) => {
+          console.log("Get audit query returned")
+
+          if (error) console.log(error)    
+          if (error) return res.json(error)
+          
+           // Strip RawDataPacket
+           const result = JSON.parse(JSON.stringify(data[0]));
+           console.log(result);        
+           return res.json(result)   
+      })
+
+      connection.release()        
+    })
+})
+
+
 //module.exports = router
 export default routesAudit

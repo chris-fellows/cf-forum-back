@@ -1,6 +1,8 @@
 //const express = require('express')
 import express from "express"
 import connectionPool from "../database.js"
+import { authenticateToken } from "../authenticationtools.js"
+//import { getUserId } from "../authenticationtools.js"
 
 const routesGroups = express.Router()
 
@@ -19,10 +21,12 @@ routesGroups.get("/test", (req, res) =>{
 })
 
 // Handle get groups request
-routesGroups.get("/", (req, res) => {
+routesGroups.get("/", authenticateToken, (req, res) => {
     console.log("Received get groups request")
 
     connectionPool.getConnection((error, connection) => {            
+        //const currentUserId = getUserId(req.header('authorization'));                
+
         console.log("Getting groups from DB")       
 
         const query = "CALL cfforum.sp_Get_Groups()"

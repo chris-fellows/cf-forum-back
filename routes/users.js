@@ -1,7 +1,7 @@
 //const express = require('express')
 import express from "express"
 import connectionPool from "../database.js"
-import { getUserId } from "../getUser.js"
+import { getUserId } from "../authenticationtools.js"
 
 const routesUsers = express.Router()
 

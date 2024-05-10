@@ -46,8 +46,8 @@ routesRootPosts.get("/bygroup/:id", (req, res) => {
     connectionPool.getConnection((error, connection) => {            
         console.log("Getting root posts by group id from DB")       
         const values = [req.params.id,
-                        10000000,   // pageSize
-                        1]          // pageNumber
+                        Number(req.query.pageSize),
+                        Number(req.query.pageNumber)]
         
         const query = "CALL cfforum.sp_Get_Root_Posts_By_Group(?, ?, ?)"
         connection.query(query, values, (error, data) => {

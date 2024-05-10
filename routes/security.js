@@ -1,5 +1,7 @@
 import express from "express"
 import connectionPool from "../database.js"
+import { createAccessToken } from "../authenticationtools.js"
+
 const routesSecurity = express.Router()
 
 // middleware that is specific to this router
@@ -17,6 +19,52 @@ routesSecurity.get("/test", (req, res) =>{
 })
 
 // Handle login request
+// TODO: Change to use JWT
+routesSecurity.post("/login", (req, res) =>{    
+  console.log("Received login request")
+
+  connectionPool.getConnection((error, connection) => {                
+    const values2 = [req.body.username, req.body.password]
+    const query2 = "CALL cfforum.sp_Login_User(?, ?)"
+    connection.query(query2, values2, (error, data) => {                    
+        if (error) console.log(error)    
+        if (error) return res.json(error)         
+        
+        if (data[0].length > 0) {      // Valid credentials                       
+          const row = data[0][0];          
+          const newUserId = Number(row.ID);
+          const newUserName = row.Name;
+          const newEmail = row.Email;
+          const newToken = row.Token;   
+          //const newUserRole = "admin";
+
+          //console.log("Sending response (Success):" + newEmail);          
+
+          const token2 = createAccessToken({ 
+                username: row.Name,            
+                userid: Number(row.ID),
+                role: "admin" 
+          });
+          console.log("Sending response (Success):" + token2);          
+          res.json(token2);       
+        }
+        else {    // Invalid credentials
+          console.log("Sending response (Failed)");
+          res.send({
+              email: "",
+              userName: "",
+              userId: 0,
+              token: ""
+            });
+        }                     
+    })
+
+    console.log("Releasing pool connection");
+    connection.release()        
+  })  
+})
+
+/*
 routesSecurity.post("/login", (req, res) =>{    
   console.log("Received login request")
 
@@ -58,6 +106,7 @@ routesSecurity.post("/login", (req, res) =>{
     connection.release()        
   })  
 })
+*/
 
 // Handle logout request
 routesSecurity.post("/logout", (req, res) =>{        

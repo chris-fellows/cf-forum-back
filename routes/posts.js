@@ -1,7 +1,7 @@
 //const express = require('express')
 import express from "express"
 import connectionPool from "../database.js"
-import { getUserId } from "../getUser.js"
+import { getUserId } from "../authenticationtools.js"
 
 const routesPosts = express.Router()
 
@@ -114,7 +114,7 @@ routesPosts.get("/byuser/:userid", (req, res) => {
         //const offset = (Number(req.query.pageNumber) - 1) * Number(req.query.pageSize);
 
         const currentUserId = getUserId(req.header('authorization'));        
-        console.log("User=" + currentUserId);
+        //console.log("User=" + currentUserId);
 
         const values = [req.params.userid,
                         Number(req.query.pageSize),

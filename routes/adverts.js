@@ -22,7 +22,7 @@ routesAdverts.get("/test", (req, res) =>{
 routesAdverts.get("/random/:number", (req, res) => {
     console.log("Received get random adverts request")
 
-    const authorization = req.header('authorization');
+    //const authorization = req.header('authorization');
 
     connectionPool.getConnection((error, connection) => {            
         console.log("Getting random adverts from DB")       

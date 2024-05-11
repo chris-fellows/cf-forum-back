@@ -38,6 +38,8 @@ routesSecurity.post("/login", (req, res) =>{
           const newToken = row.Token;   
           //const newUserRole = "admin";
 
+          console.log("UserName:" + row.Name);
+
           //console.log("Sending response (Success):" + newEmail);          
 
           const token2 = createAccessToken({ 
@@ -50,12 +52,17 @@ routesSecurity.post("/login", (req, res) =>{
         }
         else {    // Invalid credentials
           console.log("Sending response (Failed)");
+          res.status(401).send("Unauthorized")
+          //res.json({success: false, errors: 'Failed to log in'})
+
+          /*
           res.send({
               email: "",
               userName: "",
               userId: 0,
               token: ""
             });
+          */
         }                     
     })
 

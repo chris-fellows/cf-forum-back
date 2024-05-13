@@ -1,4 +1,5 @@
 //const express = require('express')
+import { authenticateToken, authoriseRole } from "../authenticationtools.js"
 import express from "express"
 import connectionPool from "../database.js"
 
@@ -19,7 +20,7 @@ routesAdverts.get("/test", (req, res) =>{
 })
 
 // Handle get random adverts request
-routesAdverts.get("/random/:number", (req, res) => {
+routesAdverts.get("/random/:number", authenticateToken, (req, res) => {
     console.log("Received get random adverts request")
 
     //const authorization = req.header('authorization');

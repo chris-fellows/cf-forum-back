@@ -1,4 +1,5 @@
 //const express = require('express')
+import { authenticateToken, authoriseRole } from "../authenticationtools.js"
 import express from "express"
 import connectionPool from "../database.js"
 
@@ -20,7 +21,7 @@ routesRootPosts.get("/test", (req, res) =>{
 
 // TODO: Remove this. Don't need to ever get all posts
 // Handle get posts request
-routesRootPosts.get("/", (req, res) => {
+routesRootPosts.get("/", authenticateToken, (req, res) => {
     console.log("Received get posts request")
 
     connectionPool.getConnection((error, connection) => {            
@@ -40,7 +41,7 @@ routesRootPosts.get("/", (req, res) => {
 })
 
 // Handle get root post by group id request
-routesRootPosts.get("/bygroup/:id", (req, res) => {
+routesRootPosts.get("/bygroup/:id", authenticateToken, (req, res) => {
     console.log("Received get root posts by group id request")
 
     connectionPool.getConnection((error, connection) => {            

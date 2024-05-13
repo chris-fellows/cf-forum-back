@@ -1,4 +1,5 @@
 //const express = require('express')
+import { authenticateToken, authoriseRole } from "../authenticationtools.js"
 import express from "express"
 import connectionPool from "../database.js"
 import { getUserId } from "../authenticationtools.js"
@@ -20,7 +21,7 @@ routesAudit.get("/test", (req, res) =>{
 })
 
 // Handle get audit by hours request
-routesAudit.get("/byhours/:hours", (req, res) => {
+routesAudit.get("/byhours/:hours", authenticateToken, authoriseRole(["ADMIN"]), (req, res) => {
     console.log("Received get audit by hours request")
 
     connectionPool.getConnection((error, connection) => {            
@@ -43,7 +44,7 @@ routesAudit.get("/byhours/:hours", (req, res) => {
             
              // Strip RawDataPacket
              const result = JSON.parse(JSON.stringify(data[0]));
-             console.log(result);        
+             //console.log(result);        
              return res.json(result)   
         })
 
@@ -52,7 +53,7 @@ routesAudit.get("/byhours/:hours", (req, res) => {
 })
 
 // Handle get audit by user request
-routesAudit.get("/byuser/:userid", (req, res) => {
+routesAudit.get("/byuser/:userid", authenticateToken, authoriseRole(["ADMIN"]), (req, res) => {
   console.log("Received get audit by user request")
 
   connectionPool.getConnection((error, connection) => {            
@@ -75,7 +76,7 @@ routesAudit.get("/byuser/:userid", (req, res) => {
           
            // Strip RawDataPacket
            const result = JSON.parse(JSON.stringify(data[0]));
-           console.log(result);        
+           //console.log(result);        
            return res.json(result)   
       })
 

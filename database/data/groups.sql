@@ -9,7 +9,7 @@ VALUES
 'Product 1 discussions',
 'Discussions of product 1',
 1,
-'https://picsum.photos/50');
+'https://farm4.staticflickr.com/3075/3168662394_7d7103de7d_z_d.jpg');
 
 INSERT INTO `cfforum`.`groups`
 (`ID`,
@@ -22,7 +22,7 @@ VALUES
 'Product 2 discussions',
 'Discussions of product 2',
 1,
-'https://picsum.photos/50');
+'https://farm8.staticflickr.com/7377/9359257263_81b080a039_z_d.jpg');
 
 INSERT INTO `cfforum`.`groups`
 (`ID`,
@@ -35,4 +35,4 @@ VALUES
 'Product 3 discussions',
 'Discussions of product 3',
 1,
-'https://picsum.photos/50');
+'https://farm9.staticflickr.com/8295/8007075227_dc958c1fe6_z_d.jpg');

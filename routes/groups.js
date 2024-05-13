@@ -1,7 +1,7 @@
 //const express = require('express')
+import { authenticateToken, authoriseRole } from "../authenticationtools.js"
 import express from "express"
 import connectionPool from "../database.js"
-import { authenticateToken } from "../authenticationtools.js"
 //import { getUserId } from "../authenticationtools.js"
 
 const routesGroups = express.Router()
@@ -47,7 +47,7 @@ routesGroups.get("/", authenticateToken, (req, res) => {
 })
 
 // Handle get group by id request
-routesGroups.get("/:id", (req, res) => {
+routesGroups.get("/:id", authenticateToken, (req, res) => {
     console.log("Received get group by id request")
 
     connectionPool.getConnection((error, connection) => {            

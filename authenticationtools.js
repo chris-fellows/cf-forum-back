@@ -7,10 +7,11 @@ export function createAccessToken(payload) {
     return jwt.sign(payload, secret, { expiresIn: '1800s' });
   }
 
+// Authenticates token in HTTP request
 export function authenticateToken(req, res, next) {
     console.log("authenticateToken: Entered");
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
+    const header = req.headers['authorization']
+    const token = header && header.split(' ')[1]
   
     if (token == null) {
       console.log("authenticateToken: No token");
@@ -21,14 +22,37 @@ export function authenticateToken(req, res, next) {
       console.log(err)
   
       if (err) {
-        console.log("authenticateToken: Error 403");
-        return res.sendStatus(403)
+        console.log("authenticateToken: Error 401");
+        return res.sendStatus(401)
       }
   
       req.user = user
   
       next()
     })
+  }
+
+  // Authorises user role in HTTP request
+  export function authoriseRole(roles) {
+    return (req, res, next) => {
+      //console.log("authoriseRole: Entered");
+      //console.log(roles);
+
+      if (roles != null && roles.length > 0) {
+        const header = req.headers['authorization']
+        const token = header && header.split(' ')[1]
+        const decoded = jwt.decode(token);
+
+        if (!roles.includes(decoded.role)) {
+          //console.log("authoriseRole: 401");
+          res.sendStatus(401);
+          //res.status(401);
+          //return res.send("not allowed");
+        }       
+      }
+
+      next();
+    };
   }
 
   // Gets UserId from request header token

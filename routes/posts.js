@@ -1,4 +1,5 @@
 //const express = require('express')
+import { authenticateToken, authoriseRole } from "../authenticationtools.js"
 import express from "express"
 import connectionPool from "../database.js"
 import { getUserId } from "../authenticationtools.js"
@@ -21,7 +22,7 @@ routesPosts.get("/test", (req, res) =>{
 
 // TODO: Remove this. Don't need to ever get all posts
 // Handle get posts request
-routesPosts.get("/", (req, res) => {
+routesPosts.get("/", authenticateToken, (req, res) => {
     console.log("Received get posts request")
 
     connectionPool.getConnection((error, connection) => {            
@@ -46,7 +47,7 @@ routesPosts.get("/", (req, res) => {
 
 // Handle delete posyt by id request
 // TODO: Change to just hide post
-routesPosts.delete("/:postid", (req, res) => {
+routesPosts.delete("/:postid", authenticateToken, (req, res) => {
     console.log("Received delete post by id request")
 
     connectionPool.getConnection((error, connection) => {            
@@ -68,7 +69,7 @@ routesPosts.delete("/:postid", (req, res) => {
 })
 
 // Handle get posts by id request
-routesPosts.get("/byroot/:postid", (req, res) => {
+routesPosts.get("/byroot/:postid", authenticateToken, (req, res) => {
     console.log("Received get posts by root post id request")
 
     connectionPool.getConnection((error, connection) => {            
@@ -104,7 +105,7 @@ routesPosts.get("/byroot/:postid", (req, res) => {
 })
 
 // Handle get posts by user id request
-routesPosts.get("/byuser/:userid", (req, res) => {
+routesPosts.get("/byuser/:userid", authenticateToken, (req, res) => {
     console.log("Received get posts by root post id request")
 
     connectionPool.getConnection((error, connection) => {            
@@ -139,7 +140,7 @@ routesPosts.get("/byuser/:userid", (req, res) => {
 })
 
 // Handle update post by id request
-routesPosts.put("/:postid", (req, res) => {
+routesPosts.put("/:postid", authenticateToken, (req, res) => {
     console.log("Received update post by id request")
 
     connectionPool.getConnection((error, connection) => {            
@@ -168,7 +169,7 @@ routesPosts.put("/:postid", (req, res) => {
 
 // Handle vote post by id request
 // 0: No vote, 1=Upvoted, 2=Voted
-routesPosts.put("/:postid/vote", (req, res) => {
+routesPosts.put("/:postid/vote", authenticateToken, (req, res) => {
     console.log("Received unvote post by id request")
 
     connectionPool.getConnection((error, connection) => {            
@@ -193,7 +194,7 @@ routesPosts.put("/:postid/vote", (req, res) => {
 
 // Handle track by id request
 // 0=Untracked, 1=Tracked
-routesPosts.put("/:postid/track", (req, res) => {
+routesPosts.put("/:postid/track", authenticateToken, (req, res) => {
     console.log("Received track post by id request")
 
     connectionPool.getConnection((error, connection) => {            
@@ -218,7 +219,7 @@ routesPosts.put("/:postid/track", (req, res) => {
 
 
 // Handle add post request
-routesPosts.post("/", (req, res) => {
+routesPosts.post("/", authenticateToken, (req, res) => {
     console.log("Received add post request")
 
     connectionPool.getConnection((error, connection) => {            

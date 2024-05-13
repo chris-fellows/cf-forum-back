@@ -3,53 +3,57 @@ INSERT INTO `cfforum`.`users`
 `Name`,
 `Email`,
 `Active`,
-`Logo`)
+`Logo`,
+`RoleID`)
 VALUES
 (1,
 'Chris Fellows',
 'chrismfellows@hotmail.co.uk',
 1,
-'https://picsum.photos/50');
+'https://picsum.photos/50',
+1);
 
 /*
 DELETE FROM `cfforum`.`user_roles` 
 WHERE UserID = 1;
 */
 
-INSERT INTO `cfforum`.`user_roles`
-(`ID`,
-`UserID`,
-`UserRoleTypeID`)
-SELECT NULL, U.ID, URT.ID
-FROM `cfforum`.`users` U
-	INNER JOIN `cfforum`.`user_role_types` URT ON URT.InternalName IN ('CREATE_POST','DELETE_POST','UPDATE_POST')
-WHERE U.ID = 1;
-
-
 INSERT INTO `cfforum`.`users`
 (`ID`,
 `Name`,
 `Email`,
 `Active`,
-`Logo`)
+`Logo`,
+`RoleID`)
 VALUES
 (2,
 'Chris Fellows 2',
-'chrisfellows90{@gmail.com',
+'chrisfellows90@gmail.com',
 1,
-'https://picsum.photos/50');
+'https://picsum.photos/50',
+2);
 
 /*
 DELETE FROM `cfforum`.`user_roles` 
 WHERE UserID = 2;
 */
 
-INSERT INTO `cfforum`.`user_roles`
+INSERT INTO `cfforum`.`users`
 (`ID`,
-`UserID`,
-`UserRoleTypeID`)
-SELECT NULL, U.ID, URT.ID
-FROM `cfforum`.`users` U
-	INNER JOIN `cfforum`.`user_role_types` URT ON URT.InternalName IN ('CREATE_POST','DELETE_POST','UPDATE_POST')
-WHERE U.ID = 2;
+`Name`,
+`Email`,
+`Active`,
+`Logo`,
+`RoleID`)
+VALUES
+(3,
+'Test 1',
+'test1@domain.com',
+1,
+'https://picsum.photos/50',
+2);
 
+/*
+DELETE FROM `cfforum`.`user_roles` 
+WHERE UserID = 3;
+*/

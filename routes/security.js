@@ -37,7 +37,7 @@ routesSecurity.post("/login", (req, res) =>{
           const token2 = createAccessToken({ 
                 username: row.Name,            
                 userid: Number(row.ID),
-                role: row.UserRole
+                role: row.UserRoleInternalName
           });
           console.log("Sending response (Success):" + token2);          
           res.json(token2);       

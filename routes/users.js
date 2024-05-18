@@ -21,21 +21,17 @@ routesUsers.get("/test", (req, res) =>{
 })
 
 // Handle get users request
-routesUsers.get("/", authenticateToken, authoriseRole(["ADMIN"]), (req, res) => {
+routesUsers.post("/", authenticateToken, authoriseRole(["ADMIN"]), (req, res) => {
   console.log("Received get users request")
 
   connectionPool.getConnection((error, connection) => {            
       console.log("Getting users from DB")      
-
-      //const currentUserId = getUserId(req.header('authorization'));        
-      //console.log("User=" + currentUserId);
       
-      const values = [  Number(req.query.pageSize),
+      const values = [req.body.find,
+                      Number(req.query.pageSize),
                       Number(req.query.pageNumber),]
-      //const values = [10000000, // pageSize
-      //                1] // pageNumber
 
-      const query = "CALL cfforum.sp_Get_Users(?, ?)"
+      const query = "CALL cfforum.sp_Get_Users(?, ?, ?)"
       connection.query(query, values, (error, data) => {
           console.log("Get users query returned")
 

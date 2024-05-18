@@ -41,16 +41,17 @@ routesRootPosts.get("/", authenticateToken, (req, res) => {
 })
 
 // Handle get root post by group id request
-routesRootPosts.get("/bygroup/:id", authenticateToken, (req, res) => {
+routesRootPosts.post("/bygroup/:id", authenticateToken, (req, res) => {
     console.log("Received get root posts by group id request")
-
+    
     connectionPool.getConnection((error, connection) => {            
         console.log("Getting root posts by group id from DB")       
         const values = [req.params.id,
+                        req.body.find,
                         Number(req.query.pageSize),
                         Number(req.query.pageNumber)]
         
-        const query = "CALL cfforum.sp_Get_Root_Posts_By_Group(?, ?, ?)"
+        const query = "CALL cfforum.sp_Get_Root_Posts_By_Group(?, ?, ?, ?)"
         connection.query(query, values, (error, data) => {
             console.log("Get posts query returned")
 

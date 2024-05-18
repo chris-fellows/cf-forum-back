@@ -21,7 +21,7 @@ routesGroups.get("/test", (req, res) =>{
 })
 
 // Handle get groups request
-routesGroups.get("/", authenticateToken, (req, res) => {
+routesGroups.post("/", authenticateToken, (req, res) => {
     console.log("Received get groups request")
 
     connectionPool.getConnection((error, connection) => {            
@@ -29,8 +29,10 @@ routesGroups.get("/", authenticateToken, (req, res) => {
 
         console.log("Getting groups from DB")       
 
-        const query = "CALL cfforum.sp_Get_Groups()"
-        connection.query(query, (error, data) => {
+        const values = [req.body.find]            
+
+        const query = "CALL cfforum.sp_Get_Groups(?)"
+        connection.query(query, values, (error, data) => {
             console.log("Get groups query returned")
 
             if (error) console.log(error)    

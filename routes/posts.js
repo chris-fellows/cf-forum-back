@@ -22,6 +22,7 @@ routesPosts.get("/test", (req, res) =>{
 
 // TODO: Remove this. Don't need to ever get all posts
 // Handle get posts request
+/*
 routesPosts.get("/", authenticateToken, (req, res) => {
     console.log("Received get posts request")
 
@@ -44,6 +45,7 @@ routesPosts.get("/", authenticateToken, (req, res) => {
         connection.release()        
       })
 })
+*/
 
 // Handle delete posyt by id request
 // TODO: Change to just hide post
@@ -146,10 +148,12 @@ routesPosts.put("/:postid", authenticateToken, (req, res) => {
     connectionPool.getConnection((error, connection) => {            
         console.log("Updating post by id")       
 
-        const values = [req.params.postid,
-                        req.body.text]
+        const currentUserId = getUserId(req.header('authorization')); 
 
-        //const query = "UPDATE cfforum.posts SET Text=? WHERE ID=?"
+        const values = [req.params.postId,
+                        req.body.text,
+                        Number(currentUserId)]
+        
         const query = "CALL cfforum.sp_Update_Post(?, ?)"
         connection.query(query, values, (error, data) => {
             console.log("Updated post")

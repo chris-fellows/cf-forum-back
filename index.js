@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import routesAdverts from "./routes/adverts.js"
 import routesAudit from "./routes/audit.js"
+import routesContents from "./routes/contents.js"
 import routesDebug from "./routes/debug.js"
 import routesGroups from "./routes/groups.js"
 import routesLanguages from "./routes/languages.js"
@@ -23,6 +24,7 @@ app.use(express.json())
 // Register routes
 app.use('/adverts', routesAdverts)
 app.use('/audit', routesAudit)
+app.use('/contents', routesContents)
 app.use('/debug', routesDebug)
 app.use('/groups', routesGroups)
 app.use('/languages', routesLanguages)

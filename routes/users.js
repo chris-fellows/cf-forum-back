@@ -73,5 +73,30 @@ routesUsers.get("/:id", authenticateToken, (req, res) => {
     })
 })
 
+// Handle forgot password request
+routesUsers.post("/forgotpassword", authenticateToken, (req, res) => {
+  console.log("Received forgot password request")
+
+  connectionPool.getConnection((error, connection) => {                  
+      // Username
+      const values = [req.body.username]
+      
+      const query = "CALL cfforum.sp_User_Forgot_Password(?)"
+      connection.query(query, values, (error, data) => {
+          console.log("Added forgot password")
+
+          if (error) console.log(error)    
+          if (error) return res.json(error)
+          
+          // Strip RawDataPacket
+          const result = JSON.parse(JSON.stringify(data[0]));
+          //console.log(result);        
+          return res.json(result)      
+      })
+
+      connection.release()        
+    })
+})
+
 //module.exports = router
 export default routesUsers

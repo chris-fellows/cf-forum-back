@@ -4,9 +4,12 @@ import routesAdverts from "./routes/adverts.js"
 import routesAudit from "./routes/audit.js"
 import routesDebug from "./routes/debug.js"
 import routesGroups from "./routes/groups.js"
+import routesLanguages from "./routes/languages.js"
+import routesPages from "./routes/pages.js"
 import routesPosts from "./routes/posts.js"
 import routesRootPosts from "./routes/rootposts.js"
 import routesSecurity from "./routes/security.js"
+import routesTags from "./routes/tags.js"
 import routesUsers from "./routes/users.js"
 
 const app = express()
@@ -22,9 +25,12 @@ app.use('/adverts', routesAdverts)
 app.use('/audit', routesAudit)
 app.use('/debug', routesDebug)
 app.use('/groups', routesGroups)
+app.use('/languages', routesLanguages)
+app.use('/pages', routesPages)
 app.use('/security', routesSecurity)
 app.use('/posts', routesPosts)
 app.use('/rootposts', routesRootPosts)
+app.use('/tags', routesTags)
 app.use('/users', routesUsers)
 
 //console.log(require('crypto').randomBytes(64).toString('hex'))

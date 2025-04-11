@@ -1,0 +1,6 @@
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Delete_Tag`(IN TagID INT)
+BEGIN
+	DELETE FROM tags t WHERE t.ID=TagID;    
+END$$
+DELIMITER ;

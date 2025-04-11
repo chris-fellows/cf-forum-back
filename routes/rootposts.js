@@ -40,7 +40,7 @@ routesRootPosts.get("/", authenticateToken, (req, res) => {
       })
 })
 
-// Handle get root post by group id request
+// Handle get root posts by group id request
 routesRootPosts.post("/bygroup/:id", authenticateToken, (req, res) => {
     console.log("Received get root posts by group id request")
     
@@ -52,6 +52,34 @@ routesRootPosts.post("/bygroup/:id", authenticateToken, (req, res) => {
                         Number(req.query.pageNumber)]
         
         const query = "CALL cfforum.sp_Get_Root_Posts_By_Group(?, ?, ?, ?)"
+        connection.query(query, values, (error, data) => {
+            console.log("Get posts query returned")
+
+            if (error) console.log(error)    
+            if (error) return res.json(error)
+            
+            // Strip RawDataPacket
+            const result = JSON.parse(JSON.stringify(data[0]));
+            console.log(result);        
+            return res.json(result)   
+        })
+
+        connection.release()        
+      })
+})
+
+// Handle get root posts by popularity request
+// Request is typically for N items from page 1 (Most popularn)
+routesRootPosts.post("/bypopularity", authenticateToken, (req, res) => {
+    console.log("Received get root posts by popularity request")
+    
+    connectionPool.getConnection((error, connection) => {            
+        console.log("Getting root posts by popularity from DB")       
+        const values = [req.body.find,
+                        Number(req.query.pageSize),
+                        Number(req.query.pageNumber)]
+        
+        const query = "CALL cfforum.sp_Get_Root_Posts_By_Popularity(?, ?, ?)"
         connection.query(query, values, (error, data) => {
             console.log("Get posts query returned")
 

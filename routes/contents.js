@@ -47,6 +47,31 @@ routesContents.post("/", authenticateToken, authoriseRole(["ADMIN"]), (req, res)
 })
 
 // Handle get content by id request
+routesContents.get("/summaries", authenticateToken, (req, res) => {
+  console.log("Received get content summaries request")
+
+  connectionPool.getConnection((error, connection) => {            
+      console.log("Getting content summaries from DB")       
+      const values = [req.params.id]
+
+      const query = "CALL cfforum.sp_Get_Content_Summaries()"
+      connection.query(query, values, (error, data) => {
+          console.log("Get content summaries query returned")
+
+          if (error) console.log(error)    
+          if (error) return res.json(error)
+
+          // Strip RawDataPacket
+          const result = JSON.parse(JSON.stringify(data[0]));
+          console.log(result);                  
+          return res.json(result);          
+      })
+
+      connection.release()        
+    })
+})
+
+// Handle get content by id request
 routesContents.get("/:id", authenticateToken, (req, res) => {
   console.log("Received get contents by id request")
 

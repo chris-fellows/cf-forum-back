@@ -73,5 +73,55 @@ routesGroups.get("/:id", authenticateToken, (req, res) => {
       })
 })
 
+// Handle get all group tags
+routesGroups.get("/tags/all", authenticateToken, (req, res) => {
+    console.log("Received get group tags request")
+
+    connectionPool.getConnection((error, connection) => {            
+        console.log("Getting group tags from DB")       
+        const values = []
+
+        const query = "CALL cfforum.sp_Get_Group_Tags()"
+        connection.query(query, values, (error, data) => {
+            console.log("Get group tags query returned")
+
+            if (error) console.log(error)    
+            if (error) return res.json(error)
+            
+             // Strip RawDataPacket
+             const result = JSON.parse(JSON.stringify(data[0]));
+             console.log(result);        
+             return res.json(result)   
+        })
+
+        connection.release()        
+      })
+})
+
+// Handle get group tags by group request
+routesGroups.get("/tags/:id", authenticateToken, (req, res) => {
+    console.log("Received get group tags by group id request")
+
+    connectionPool.getConnection((error, connection) => {            
+        console.log("Getting group tags by group id from DB")       
+        const values = [req.params.id]
+
+        const query = "CALL cfforum.sp_Get_Group_Tags_By_Group(?)"
+        connection.query(query, values, (error, data) => {
+            console.log("Get group tags by group query returned")
+
+            if (error) console.log(error)    
+            if (error) return res.json(error)
+            
+             // Strip RawDataPacket
+             const result = JSON.parse(JSON.stringify(data[0]));
+             console.log(result);        
+             return res.json(result)   
+        })
+
+        connection.release()        
+      })
+})
+
 //module.exports = router
 export default routesGroups

@@ -36,3 +36,67 @@ VALUES
 'Discussions of product 3',
 1,
 'https://farm9.staticflickr.com/8295/8007075227_dc958c1fe6_z_d.jpg');
+
+
+INSERT INTO `cfforum`.`group_tags`
+(`ID`,
+`GroupID`,
+`TagID`)
+VALUES
+(1,
+1,
+2);
+
+INSERT INTO `cfforum`.`group_tags`
+(`ID`,
+`GroupID`,
+`TagID`)
+VALUES
+(2,
+1,
+3);
+
+INSERT INTO `cfforum`.`group_tags`
+(`ID`,
+`GroupID`,
+`TagID`)
+VALUES
+(1,
+1,
+2);
+
+INSERT INTO `cfforum`.`group_tags`
+(`ID`,
+`GroupID`,
+`TagID`)
+VALUES
+(3,
+2,
+2);
+
+INSERT INTO `cfforum`.`group_tags`
+(`ID`,
+`GroupID`,
+`TagID`)
+VALUES
+(4,
+2,
+3);
+
+INSERT INTO `cfforum`.`group_tags`
+(`ID`,
+`GroupID`,
+`TagID`)
+VALUES
+(5,
+3,
+2);
+
+INSERT INTO `cfforum`.`group_tags`
+(`ID`,
+`GroupID`,
+`TagID`)
+VALUES
+(6,
+3,
+3);

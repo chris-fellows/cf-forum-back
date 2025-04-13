@@ -38,4 +38,22 @@ VALUES
 'Site Maintenance Message',
 '<p>The site is undergoing maintenance.</p><p>Please check again later.</p>');
 
+INSERT INTO `cfforum`.`contents`
+(`ID`,
+`Name`,
+`Data`)
+VALUES
+(5,
+'Privacy Message',
+'<p>Privacy message</p>');
+
+INSERT INTO `cfforum`.`contents`
+(`ID`,
+`Name`,
+`Data`)
+VALUES
+(6,
+'Contact Message',
+'<p>Please send an email to xxxx@domain.com</p>');
+
 
